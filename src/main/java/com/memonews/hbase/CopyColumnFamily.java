@@ -22,6 +22,7 @@
 package com.memonews.hbase;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.util.GenericOptionsParser;
 
 import com.memonews.hbase.util.HBaseAdminUtil;
@@ -42,15 +43,16 @@ public class CopyColumnFamily {
      *             when an error occurs
      */
     public static void main(final String[] args) throws Exception {
-	final Configuration conf = new GenericOptionsParser(args).getConfiguration();
-	if (args.length != 4) {
+	final Configuration conf = HBaseConfiguration.create();
+	final String[] remainingArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+	if (remainingArgs.length != 4) {
 	    System.out.println(getUsage());
 	} else {
-	    HBaseAdminUtil.copyColumnFamily(conf, args[0], args[1], args[2], args[3]);
+	    HBaseAdminUtil.copyColumnFamily(conf, remainingArgs[0], remainingArgs[1], remainingArgs[2], remainingArgs[3]);
 	}
     }
 
     private static String getUsage() {
-	return "CopyColumnFamily <source-table> <source-column> <target-table> <target-column>";
+	return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamily [-conf ...] <source-table> <source-column> <target-table> <target-column>";
     }
 }

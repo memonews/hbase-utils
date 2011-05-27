@@ -45,15 +45,15 @@ public class CopyTable {
      */
     public static void main(final String[] args) throws Exception {
 	final Configuration conf = HBaseConfiguration.create();
-	new GenericOptionsParser(conf, args);
-	if (args.length != 2) {
+	final String[] remainingArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+	if (remainingArgs.length != 2) {
 	    System.out.println(getUsage());
 	} else {
-	    HBaseAdminUtil.copyTable(conf, args[0], args[1]);
+	    HBaseAdminUtil.copyTable(conf, remainingArgs[0], remainingArgs[1]);
 	}
     }
 
     private static String getUsage() {
-	return "CopyTable <source-table> <target-table>";
+	return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable [-conf ...] <source> <target>";
     }
 }
