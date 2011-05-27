@@ -4,7 +4,7 @@ https://github.com/memonews/hbase-utils
 
 Copyright (C) 2011 MeMoNews AG 
 
-This are Utilities to copy/move HBase Tables and/or Columns.
+HBase Utilities to copy/move/rename column-families or copy complete tables with it's data. 
 This software comes with absolutely *NO WARRANTY* whatsoever. 
 See LICENSE.txt for more details. 
 The utilities are for testing porposes only and should not be used on a 
@@ -17,6 +17,14 @@ Installation:
 
 2. then run one of the the following executables:
 
-	a) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable <source> <target>
-	b) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamily <source-table> <source-column> <target-table> <target-column>
-	c) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamily <source-table> <source-column> <target-table> <target-column>
+	a) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable [-conf ...] <source> <target>
+	 - to copy a complete table
+	
+	b) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamily [-conf ...] <source-table> <source-column> <target-table> <target-column>
+	 - to copy a column-family from one table to another table
+	 - to copy a column-family to the same table under a different name 
+	
+	c) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamily [-conf ...] <source-table> <source-column> <target-table> <target-column>
+	 - to move a column-family from one table to another table
+	 - to rename a column-family within a table
+s
