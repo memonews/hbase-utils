@@ -1,0 +1,22 @@
+HBase Commandline Utilities
+---------------------------
+https://github.com/memonews/hbase-utils
+
+Copyright (C) 2011 MeMoNews AG 
+
+This are Utilities to copy/move HBase Tables and/or Columns.
+This software comes with absolutely *NO WARRANTY* whatsoever. 
+See LICENSE.txt for more details. 
+The utilities are for testing porposes only and should not be used on a 
+production system without further testing (they are also very slow compared to a mapreduce job).
+
+Installation:
+-------------
+
+1. build the project via maven: $ mvn package
+
+2. then run one of the the following executables:
+
+	a) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable <source> <target>
+	b) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamily <source-table> <source-column> <target-table> <target-column>
+	c) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamily <source-table> <source-column> <target-table> <target-column>
