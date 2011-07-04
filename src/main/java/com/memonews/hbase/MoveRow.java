@@ -19,23 +19,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.memonews.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.util.GenericOptionsParser;
 
-import com.memonews.hbase.util.HBaseAdminUtil;
+import com.memonews.hbase.util.HBaseUtil;
 
 /**
- * HBase Column Family Utility to rename or move a column family.
+ * HBase Row Move Utility.
  * 
  * @author nkuebler, MeMo News AG
  */
-public class MoveColumnFamily {
+public class MoveRow {
 
 	/**
-	 * Moves/Renames a Column preserving all it's data.
+	 * Copies a row with all columns.
 	 * 
 	 * @param args
 	 *            cli-parameter
@@ -49,12 +50,11 @@ public class MoveColumnFamily {
 		if (remainingArgs.length != 4) {
 			System.out.println(getUsage());
 		} else {
-			HBaseAdminUtil.moveColumnFamily(conf, remainingArgs[0],
-					remainingArgs[1], remainingArgs[2], remainingArgs[3]);
+			HBaseUtil.moveRow(conf, remainingArgs[0], remainingArgs[1], remainingArgs[2], remainingArgs[3]);
 		}
 	}
 
 	private static String getUsage() {
-		return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamily [-conf ...] <source-table> <source-column> <target-table> <target-column>";
+		return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveRow [-conf ...] <source-table> <source-row> <target-table> <target-row>";
 	}
 }

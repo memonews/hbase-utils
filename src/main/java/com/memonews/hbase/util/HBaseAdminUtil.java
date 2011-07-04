@@ -44,112 +44,125 @@ import org.slf4j.LoggerFactory;
  */
 public class HBaseAdminUtil {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HBaseAdminUtil.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(HBaseAdminUtil.class);
 
-    public static void copyTable(final Configuration conf, final String sourceTableName, final String targetTableName) throws Exception {
-	final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
-	final HTable sourceTable = new HTable(conf, sourceTableName);
-	final HTableDescriptor target = cloneTableDescriptor(sourceTable.getTableDescriptor(), targetTableName);
+	public static void copyTable(final Configuration conf,
+			final String sourceTableName, final String targetTableName)
+			throws Exception {
+		final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
+		final HTable sourceTable = new HTable(conf, sourceTableName);
+		final HTableDescriptor target = cloneTableDescriptor(
+				sourceTable.getTableDescriptor(), targetTableName);
 
-	LOG.info("creating table ... " + Bytes.toString(target.getName()));
-	admin.createTable(target);
+		LOG.info("creating table ... " + Bytes.toString(target.getName()));
+		admin.createTable(target);
 
-	final HColumnDescriptor[] families = sourceTable.getTableDescriptor().getColumnFamilies();
-	for (final HColumnDescriptor family : families) {
-	    copyColumnFamily(conf, sourceTableName, family.getNameAsString(), targetTableName, family.getNameAsString());
-	}
-    }
-
-    public static void moveColumnFamily(final Configuration conf, final String sourceTableName, final String sourceColumnFamily, final String targetTableName,
-	    final String targetColumnFamily) throws Exception {
-	final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
-	final HTable sourceTable = new HTable(conf, sourceTableName);
-	final HColumnDescriptor source = findColumnFamily(sourceTable, sourceColumnFamily);
-
-	copyColumnFamily(conf, sourceTableName, sourceColumnFamily, targetTableName, targetColumnFamily);
-
-	LOG.info("deleting column-family ... " + Bytes.toString(source.getName()));
-	admin.disableTable(sourceTableName);
-	admin.deleteColumn(Bytes.toBytes(sourceTableName), source.getName());
-	admin.enableTable(sourceTableName);
-    }
-
-    public static void copyColumnFamily(final Configuration conf, final String sourceTableName, final String sourceColumnFamily, final String targetTableName,
-	    final String targetColumnFamily) throws Exception {
-	final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
-
-	final HTable sourceTable = new HTable(conf, sourceTableName);
-	HTable targetTable = new HTable(conf, targetTableName);
-	final HColumnDescriptor source = findColumnFamily(sourceTable, sourceColumnFamily);
-	if (source == null) {
-	    throw new Exception("Source Column Family '" + sourceColumnFamily + "' not found");
-	}
-	if (null != findColumnFamily(targetTable, targetColumnFamily)) {
-	    throw new Exception("Target Column Family '" + targetColumnFamily + "' already exists");
+		final HColumnDescriptor[] families = sourceTable.getTableDescriptor()
+				.getColumnFamilies();
+		for (final HColumnDescriptor family : families) {
+			copyColumnFamily(conf, sourceTableName, family.getNameAsString(),
+					targetTableName, family.getNameAsString());
+		}
 	}
 
-	final HColumnDescriptor target = cloneColumnDescriptor(source, targetColumnFamily);
-	LOG.info("creating column-family ... " + Bytes.toString(target.getName()));
-	admin.disableTable(targetTableName);
-	admin.addColumn(targetTableName, target);
-	admin.enableTable(targetTableName);
+	public static void moveColumnFamily(final Configuration conf,
+			final String sourceTableName, final String sourceColumnFamily,
+			final String targetTableName, final String targetColumnFamily)
+			throws Exception {
+		final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
+		final HTable sourceTable = new HTable(conf, sourceTableName);
+		final HColumnDescriptor source = findColumnFamily(sourceTable,
+				sourceColumnFamily);
 
-	targetTable = new HTable(conf, targetTableName);
+		copyColumnFamily(conf, sourceTableName, sourceColumnFamily,
+				targetTableName, targetColumnFamily);
 
-	final Scan scan = new Scan();
-	scan.addFamily(source.getName());
-	scan.setMaxVersions();
-	scan.setBatch(1);
-
-	final ResultScanner scanner = sourceTable.getScanner(scan);
-	for (final Result result : scanner) {
-	    final Put put = resultToPut(result, source.getName(), target.getName());
-	    LOG.info("updating row ... " + Bytes.toString(put.getRow()));
-	    targetTable.put(put);
+		LOG.info("deleting column-family ... "
+				+ Bytes.toString(source.getName()));
+		admin.disableTable(sourceTableName);
+		admin.deleteColumn(Bytes.toBytes(sourceTableName), source.getName());
+		admin.enableTable(sourceTableName);
 	}
-    }
 
-    public static HTableDescriptor cloneTableDescriptor(final HTableDescriptor source, final String targetName) {
-	final HTableDescriptor dest = new HTableDescriptor(targetName);
-	dest.setDeferredLogFlush(source.isDeferredLogFlush());
-	dest.setMaxFileSize(source.getMaxFileSize());
-	dest.setMemStoreFlushSize(source.getMemStoreFlushSize());
-	dest.setReadOnly(dest.isReadOnly());
-	return dest;
-    }
+	public static void copyColumnFamily(final Configuration conf,
+			final String sourceTableName, final String sourceColumnFamily,
+			final String targetTableName, final String targetColumnFamily)
+			throws Exception {
+		final HBaseAdmin admin = new HBaseAdmin(new Configuration(conf));
 
-    public static HColumnDescriptor cloneColumnDescriptor(final HColumnDescriptor source, final String targetName) {
-	final HColumnDescriptor dest = new HColumnDescriptor(targetName);
-	dest.setBlockCacheEnabled(source.isBlockCacheEnabled());
-	dest.setBlocksize(source.getBlocksize());
-	dest.setBloomFilterType(source.getBloomFilterType());
-	dest.setCompactionCompressionType(source.getCompactionCompressionType());
-	dest.setCompressionType(source.getCompressionType());
-	dest.setInMemory(source.isInMemory());
-	dest.setMaxVersions(source.getMaxVersions());
-	dest.setScope(source.getScope());
-	dest.setTimeToLive(source.getTimeToLive());
-	return dest;
-    }
+		final HTable sourceTable = new HTable(conf, sourceTableName);
+		HTable targetTable = new HTable(conf, targetTableName);
+		final HColumnDescriptor source = findColumnFamily(sourceTable,
+				sourceColumnFamily);
+		if (source == null) {
+			throw new Exception("Source Column Family '" + sourceColumnFamily
+					+ "' not found");
+		}
+		if (null != findColumnFamily(targetTable, targetColumnFamily)) {
+			throw new Exception("Target Column Family '" + targetColumnFamily
+					+ "' already exists");
+		}
 
-    public static HColumnDescriptor findColumnFamily(final HTable table, final String columnFamily) throws Exception {
-	for (final HColumnDescriptor desc : table.getTableDescriptor().getFamilies()) {
-	    if (Bytes.toString(desc.getName()).equals(columnFamily)) {
-		return desc;
-	    }
+		final HColumnDescriptor target = cloneColumnDescriptor(source,
+				targetColumnFamily);
+		LOG.info("creating column-family ... "
+				+ Bytes.toString(target.getName()));
+		admin.disableTable(targetTableName);
+		admin.addColumn(targetTableName, target);
+		admin.enableTable(targetTableName);
+
+		targetTable = new HTable(conf, targetTableName);
+
+		final Scan scan = new Scan();
+		scan.addFamily(source.getName());
+		scan.setMaxVersions();
+		scan.setBatch(1);
+
+		final ResultScanner scanner = sourceTable.getScanner(scan);
+		for (final Result result : scanner) {
+			final Put put = new Put(result.getRow());
+			HBaseUtil.resultToPut(result, put, source.getName(),
+					target.getName());
+			LOG.info("updating row ... " + Bytes.toString(put.getRow()));
+			targetTable.put(put);
+		}
 	}
-	return null;
-    }
 
-    private static Put resultToPut(final Result result, final byte[] sourceFamily, final byte[] targetFamily) {
-	final Put put = new Put(result.getRow());
-	final NavigableMap<byte[], NavigableMap<Long, byte[]>> map = result.getMap().get(sourceFamily);
-	for (final byte[] qualifier : map.keySet()) {
-	    for (final Long ts : map.get(qualifier).keySet()) {
-		final byte[] value = map.get(qualifier).get(ts);
-		put.add(targetFamily, qualifier, ts, value);
-	    }
+	public static HTableDescriptor cloneTableDescriptor(
+			final HTableDescriptor source, final String targetName) {
+		final HTableDescriptor dest = new HTableDescriptor(targetName);
+		dest.setDeferredLogFlush(source.isDeferredLogFlush());
+		dest.setMaxFileSize(source.getMaxFileSize());
+		dest.setMemStoreFlushSize(source.getMemStoreFlushSize());
+		dest.setReadOnly(dest.isReadOnly());
+		return dest;
 	}
-	return put;
-    }
+
+	public static HColumnDescriptor cloneColumnDescriptor(
+			final HColumnDescriptor source, final String targetName) {
+		final HColumnDescriptor dest = new HColumnDescriptor(targetName);
+		dest.setBlockCacheEnabled(source.isBlockCacheEnabled());
+		dest.setBlocksize(source.getBlocksize());
+		dest.setBloomFilterType(source.getBloomFilterType());
+		dest.setCompactionCompressionType(source.getCompactionCompressionType());
+		dest.setCompressionType(source.getCompressionType());
+		dest.setInMemory(source.isInMemory());
+		dest.setMaxVersions(source.getMaxVersions());
+		dest.setScope(source.getScope());
+		dest.setTimeToLive(source.getTimeToLive());
+		return dest;
+	}
+
+	public static HColumnDescriptor findColumnFamily(final HTable table,
+			final String columnFamily) throws Exception {
+		for (final HColumnDescriptor desc : table.getTableDescriptor()
+				.getFamilies()) {
+			if (Bytes.toString(desc.getName()).equals(columnFamily)) {
+				return desc;
+			}
+		}
+		return null;
+	}
+
 }

@@ -35,25 +35,26 @@ import com.memonews.hbase.util.HBaseAdminUtil;
  */
 public class CopyTable {
 
-    /**
-     * Creates an 1:1 duplicate of a table with all it's data.
-     * 
-     * @param args
-     *            cli-parameter
-     * @throws Exception
-     *             when an error occurs
-     */
-    public static void main(final String[] args) throws Exception {
-	final Configuration conf = HBaseConfiguration.create();
-	final String[] remainingArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-	if (remainingArgs.length != 2) {
-	    System.out.println(getUsage());
-	} else {
-	    HBaseAdminUtil.copyTable(conf, remainingArgs[0], remainingArgs[1]);
+	/**
+	 * Copies a row with all columns.
+	 * 
+	 * @param args
+	 *            cli-parameter
+	 * @throws Exception
+	 *             when an error occurs
+	 */
+	public static void main(final String[] args) throws Exception {
+		final Configuration conf = HBaseConfiguration.create();
+		final String[] remainingArgs = new GenericOptionsParser(conf, args)
+				.getRemainingArgs();
+		if (remainingArgs.length != 2) {
+			System.out.println(getUsage());
+		} else {
+			HBaseAdminUtil.copyTable(conf, remainingArgs[0], remainingArgs[1]);
+		}
 	}
-    }
 
-    private static String getUsage() {
-	return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable [-conf ...] <source> <target>";
-    }
+	private static String getUsage() {
+		return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyTable [-conf ...] <source> <target>";
+	}
 }
