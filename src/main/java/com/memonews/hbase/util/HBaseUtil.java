@@ -18,12 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Utility-Functions for HBase.
+ * 
  * @author nkuebler, MeMo News AG
- * @since 2.0.0
- *
  */
 public class HBaseUtil {
-	
 	
 	private static final Logger LOG = LoggerFactory.getLogger(HBaseUtil.class);
 	

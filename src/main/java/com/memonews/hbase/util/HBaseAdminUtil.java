@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Collection of Utility-Function for HBaseAdmin.
+ * Utility-Functions for HBaseAdmin.
  * 
  * @author nkuebler, MeMo News AG
  */
