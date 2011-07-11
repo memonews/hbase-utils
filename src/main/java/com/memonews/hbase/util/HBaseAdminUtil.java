@@ -113,21 +113,10 @@ public class HBaseAdminUtil {
 		admin.enableTable(targetTableName);
 
 		targetTable = new HTable(conf, targetTableName);
-
-		final Scan scan = new Scan();
-		scan.addFamily(source.getName());
-		scan.setMaxVersions();
-		scan.setBatch(1);
-
-		final ResultScanner scanner = sourceTable.getScanner(scan);
-		for (final Result result : scanner) {
-			final Put put = new Put(result.getRow());
-			HBaseUtil.resultToPut(result, put, source.getName(),
-					target.getName());
-			LOG.info("updating row ... " + Bytes.toString(put.getRow()));
-			targetTable.put(put);
-		}
+		
+		HBaseUtil.copyColumnFamilyData(conf, sourceTableName, sourceColumnFamily, targetTableName, targetColumnFamily);
 	}
+	
 
 	public static HTableDescriptor cloneTableDescriptor(
 			final HTableDescriptor source, final String targetName) {

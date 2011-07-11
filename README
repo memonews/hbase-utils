@@ -35,3 +35,7 @@ Installation:
 	e) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveRow [-conf ...] <source-table> <source-row> <target-table> <target-row>
      - to move row from one table to another table
      - to move row to the same table under a different key
+
+    f) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
+	 - to copy data of a column-family from one table to another table
+	 - to copy data a column-family to the same table under a different name 
