@@ -99,6 +99,43 @@ public class HBaseUtil {
 			}
 		}
 	}
+	
+	public static void moveColumnFamilyData(final Configuration conf,
+			final String sourceTableName, final String sourceColumnFamily,
+			final String targetTableName, final String targetColumnFamily)
+					throws IOException {
+		LOG.info("move column data ... from " + sourceTableName + "/"
+				+ sourceColumnFamily + " to " + targetTableName + "/"
+				+ targetColumnFamily);
+		final HTable sourceTable = new HTable(conf, sourceTableName);
+		final HTable targetTable = new HTable(conf, targetTableName);
+		byte[] sourceName = Bytes.toBytes(sourceColumnFamily);
+		byte[] targetName = Bytes.toBytes(sourceColumnFamily);
+		
+		final Scan scan = new Scan();
+		scan.addFamily(sourceName);
+		scan.setMaxVersions();
+		scan.setBatch(1000);
+		
+		final ResultScanner scanner = sourceTable.getScanner(scan);
+		int i = 0;
+		for (final Result result : scanner) {
+			final Put put = new Put(result.getRow());
+			HBaseUtil.resultToPut(result, put, sourceName, targetName);
+			System.out.print(".");
+			if (i++ > 1000) {
+				System.out.println(" at row:" + Bytes.toString(put.getRow()));
+				i = 0;
+			}
+			try {
+				targetTable.put(put);
+			} catch (IOException e) {
+				LOG.error("couldn't copy row: " + e.getMessage());
+			}
+			final Delete delete = new Delete(result.getRow());
+			sourceTable.delete(delete);
+		}
+	}
 
 	public static Put resultToPut(final Result source, Put target,
 			final byte[] sourceFamily, final byte[] targetFamily) {
