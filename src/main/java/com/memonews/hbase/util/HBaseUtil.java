@@ -129,12 +129,12 @@ public class HBaseUtil {
 			}
 			try {
 				targetTable.put(put);
+				final Delete delete = new Delete(result.getRow());
+				delete.deleteFamily(sourceName);
+				sourceTable.delete(delete);
 			} catch (IOException e) {
 				LOG.error("couldn't copy row: " + e.getMessage());
 			}
-			final Delete delete = new Delete(result.getRow());
-			delete.deleteFamily(sourceName);
-			sourceTable.delete(delete);
 		}
 	}
 
