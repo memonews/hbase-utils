@@ -133,6 +133,7 @@ public class HBaseUtil {
 				LOG.error("couldn't copy row: " + e.getMessage());
 			}
 			final Delete delete = new Delete(result.getRow());
+			delete.deleteFamily(sourceName);
 			sourceTable.delete(delete);
 		}
 	}
