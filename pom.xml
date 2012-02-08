@@ -3,11 +3,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>corporate</artifactId>
-		<groupId>com.memonews</groupId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
 
 	<groupId>com.memonews</groupId>
 	<artifactId>hbase-utils</artifactId>
@@ -36,6 +31,18 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>cdh.repo</id>
+			<name>Cloudera Releases CDH3</name>
+			<url>https://repository.cloudera.com/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 
 	<build>
 		<plugins>
