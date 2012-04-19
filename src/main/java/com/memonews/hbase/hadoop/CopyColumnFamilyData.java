@@ -1,7 +1,7 @@
 /**
  * HBase Commandline Utilities
  * 
- * Copyright (C) 2011 MeMo News AG
+ * Copyright (C) 2012 FullContact, Inc.
  * 
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -41,14 +41,15 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import java.io.IOException;
 
 /**
- * HBase Row Copy Utility.
+ * HBase Column Family Copy Hadoop Job.
  * 
- * @author nkuebler, MeMo News AG
+ * @author Dan Lynn (@danklynn), FullContact, Inc.
  */
 public class CopyColumnFamilyData {
 
 	/**
-	 * Creates an 1:1 duplicate of a table with all it's data.
+	 * Copies all rows from source-table/source-family to
+     * target-table/target-family
 	 * 
 	 * @param args
 	 *            cli-parameter
@@ -117,7 +118,8 @@ public class CopyColumnFamilyData {
     }
 
 	private static String getUsage() {
-		return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamilyData [-conf ...] <source-table> <source-row> <target-table> <target-row>";
+		return "hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.hadoop.CopyColumnFamilyData [-conf ...] <source-table> <source-family> <target-table> <target-family>"
+                + "\n\t Note: For maximum performance, be sure that <source-table> has multiple regions. Hadoop will only run one map task per region.";
 	}
 
 
