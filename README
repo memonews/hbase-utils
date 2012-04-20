@@ -29,17 +29,20 @@ Installation:
 	 - to rename a column-family within a table
 
 	d) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyRow [-conf ...] <source-table> <source-row> <target-table> <target-row>
-     - to copy row from one table to another table
+     	 - to copy row from one table to another table
 	 - to copy row to the same table under a different key 
 	
 	e) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveRow [-conf ...] <source-table> <source-row> <target-table> <target-row>
-     - to move row from one table to another table
-     - to move row to the same table under a different key
+	 - to move row from one table to another table
+	 - to move row to the same table under a different key
 
-    f) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
+	f) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.CopyColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
 	 - to copy data of a column-family from one table to another table
 	 - to copy data a column-family to the same table under a different name 
 
-    g) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
+        f2) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.hadoop.CopyColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
+         - distributed version of f) via map-reduce (faster if there are multiple regions)
+
+ 	g) $ hadoop jar target/hbase-utils-1.0-SNAPSHOT.jar com.memonews.hbase.MoveColumnFamilyData [-conf ...] <source-table> <source-column> <target-table> <target-column>
 	 - to move data of a column-family from one table to another table
 	 - to move data a column-family to the same table under a different name 
