@@ -75,7 +75,7 @@ public class HBaseUtil {
 		final HTable sourceTable = new HTable(conf, sourceTableName);
 		final HTable targetTable = new HTable(conf, targetTableName);
 		byte[] sourceName = Bytes.toBytes(sourceColumnFamily);
-		byte[] targetName = Bytes.toBytes(sourceColumnFamily);
+		byte[] targetName = Bytes.toBytes(targetColumnFamily);
 
 		final Scan scan = new Scan();
 		scan.addFamily(sourceName);
@@ -110,7 +110,7 @@ public class HBaseUtil {
 		final HTable sourceTable = new HTable(conf, sourceTableName);
 		final HTable targetTable = new HTable(conf, targetTableName);
 		byte[] sourceName = Bytes.toBytes(sourceColumnFamily);
-		byte[] targetName = Bytes.toBytes(sourceColumnFamily);
+		byte[] targetName = Bytes.toBytes(targetColumnFamily);
 		
 		final Scan scan = new Scan();
 		scan.addFamily(sourceName);
